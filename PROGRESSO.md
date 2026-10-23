@@ -83,6 +83,15 @@
 
 ## Diário de execução
 
+### 22/10/2026 — M0 / ferramenta local de otimização de contexto
+- **Objetivo:** disponibilizar o Token Optimizer para o Codex neste projeto sem incluir seus arquivos de configuração no Git.
+- **Arquivos alterados:** `.git/info/exclude` (regra local `.codex/`), `.codex/config.toml` e `.codex/hooks.json` (ambos ignorados pelo Git), configuração pessoal do Codex fora do repositório e este registro. O pacote foi instalado no cache pessoal do Codex.
+- **Comandos executados:** consulta à documentação do projeto da ferramenta e do Codex; `codex plugin marketplace add alexgreensh/token-optimizer`; `codex plugin add token-optimizer@alexgreensh-token-optimizer --json`; execução de `codex-install --project . --profile balanced --skip-compact-prompt` após `--dry-run`; `codex-doctor --project .`; `codex plugin list` dentro e fora do projeto; `git check-ignore -v`, `git ls-files .codex`, `git status --short` e `git diff --check`.
+- **Resultados observados:** pacote 5.13.57 no cache pessoal; plugin habilitado neste projeto e desabilitado fora dele. Cinco eventos de hooks foram escritos em `.codex/hooks.json`: SessionStart, Stop, SubagentStart, SubagentStop e UserPromptSubmit. O Git ignora os dois arquivos locais em `.codex/`; `git ls-files .codex` não retornou arquivos. Não foram criados hooks globais.
+- **Problemas/limitações:** `codex-doctor` retornou 20 OK, 2 WARN e 2 FAIL. Os FAIL correspondem ao prompt de compactação e aos hooks globais deliberadamente não configurados; a configuração por projeto foi reconhecida como OK. O hook Stop ainda não teve execução observada nesta sessão, portanto não há evidência de redução de tokens ou de atualização do dashboard. Reiniciar o Codex é necessário para carregar os hooks novos.
+- **Evidência:** configuração local ignorada pelo Git, saída de `codex plugin list` com estado habilitado somente dentro do projeto e diagnóstico do instalador.
+- **Próximo passo autorizado:** verificar a execução do hook em uma sessão nova do Codex; concluir os itens pendentes de M0.
+
 ### 22/10/2026 — M0 / diferenciação dos diagramas do README
 - **Objetivo:** tornar visualmente distintas a visão rápida do pipeline e a arquitetura detalhada, conforme retorno do proprietário.
 - **Arquivos alterados:** os quatro SVGs em `assets/` e este registro em `PROGRESSO.md`. Os caminhos no README permaneceram válidos.
