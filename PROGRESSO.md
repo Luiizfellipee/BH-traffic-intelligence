@@ -1,6 +1,6 @@
 # PROGRESSO — BH Traffic Intelligence
 
-> Início: 22/10/2026 · Estado: **não iniciado** · Fase autorizada para início: **M0 (Fundação e inventário)**
+> Início: 22/10/2026 · Estado: **em andamento** · Fase ativa: **M0 (Fundação e inventário)**
 
 ## Como usar
 - `[ ]` pendente, `[x]` concluído com evidência documentada.
@@ -12,7 +12,7 @@
 
 | Marco | Etapa | Estado | Gate |
 |---|---|---|---|
-| M0 | Fundação e inventário de fontes | Pendente / autorizada para início | Ambiente, CI e inventário verificáveis |
+| M0 | Fundação e inventário de fontes | Em andamento | Ambiente, CI e inventário verificáveis |
 | M1 | Ingestão auditável | Bloqueado até aprovação | Download e rerun sem duplicações |
 | M2 | Bronze/Silver + qualidade | Bloqueado | Profiling e reconciliação |
 | M3 | PostgreSQL e modelo analítico | Bloqueado | Chaves/cardinalidade e SQL válidos |
@@ -21,14 +21,14 @@
 | M6 | ML opcional | Bloqueado por gate de viabilidade | Sem leakage; baseline, split temporal |
 | M7 | Atualizações e fontes adicionais | Bloqueado | Fontes separadas e ingestão não destrutiva |
 
-## M0 — Fundação e inventário (ATIVA PARA INÍCIO)
+## M0 — Fundação e inventário (EM ANDAMENTO)
 - [ ] Inicializar repositório e definir `.gitignore` seguro.
 - [ ] Criar estrutura mínima, `pyproject.toml`, ambiente Python 3.12 e README inicial.
 - [ ] Configurar Ruff, pytest, primeiro teste e workflow de CI.
 - [ ] Criar Compose de PostgreSQL local e `.env.example` (sem segredos reais).
 - [x] Identificar e registrar todas as quatro fontes anuais BHTRANS e seus recursos/anos efetivos. Evidência parcial desta etapa CKAN: `docs/data_sources.md`.
 - [ ] Registrar nomenclatura, formatos, licenças, datas e riscos de schema.
-- [ ] Criar `docs/architecture.md` e `docs/data_sources.md` iniciais.
+- [x] Criar `docs/architecture.md` e `docs/data_sources.md` iniciais. Evidência: [`docs/architecture.md`](docs/architecture.md) e [`docs/data_sources.md`](docs/data_sources.md).
 - [ ] Rodar validações possíveis e documentar resultados.
 - [ ] Registrar conclusão com evidências e pedir aprovação para M1.
 
@@ -82,6 +82,34 @@
 - [ ] Comparação separada com dados 2025/2026 se apropriada.
 
 ## Diário de execução
+
+### 22/10/2026 — M0 / diferenciação dos diagramas do README
+- **Objetivo:** tornar visualmente distintas a visão rápida do pipeline e a arquitetura detalhada, conforme retorno do proprietário.
+- **Arquivos alterados:** os quatro SVGs em `assets/` e este registro em `PROGRESSO.md`. Os caminhos no README permaneceram válidos.
+- **Comandos executados:** leitura do README, arquitetura e progresso; renderização dos quatro SVGs no Edge com Playwright; validação XML com `xml.etree.ElementTree`; checagem geométrica de texto dentro dos cards; inspeção visual das capturas; `git diff --check`.
+- **Resultados observados:** pipeline horizontal de seis etapas com resumos inferiores e paleta azul/teal; arquitetura de seis módulos com responsabilidades e artefatos em painéis mais detalhados e paleta violeta/teal. As versões móveis usam leitura vertical. Os quatro arquivos passaram na validação XML e na checagem geométrica: seis cards e nenhum texto fora dos cards em cada arquivo. A versão móvel do pipeline foi ajustada após a inspeção visual para evitar conteúdo próximo à borda inferior.
+- **Problemas/limitações:** a interface final do GitHub ainda não foi inspecionada. Os módulos planejados continuam sem implementação; M0 segue incompleta.
+- **Evidência:** `assets/pipeline-overview.svg`, `assets/pipeline-overview-mobile.svg`, `assets/data-architecture.svg` e `assets/data-architecture-mobile.svg`.
+- **Próximo passo autorizado:** concluir os itens pendentes de M0 conforme seus critérios.
+
+### 22/10/2026 — M0 / apresentação visual do README
+- **Objetivo:** apresentar o inventário já verificado e a arquitetura futura com leitura clara em desktop e celular, sem antecipar os gates de M1–M5.
+- **Arquivos alterados:** `README.md`, quatro SVGs em `assets/` e este registro em `PROGRESSO.md`.
+- **Comandos executados:** leitura de `AGENTS.md`, `files/PLANO_MESTRE.md`, `PROGRESSO.md`, README e documentos adjacentes; `git status --short` e `git diff`; validação local em Python de XML, referências e âncoras; renderização dos quatro SVGs em Edge com Playwright; inspeção visual das capturas; `git diff --check`.
+- **Resultados observados:** README reorganizado com navegação, estados por texto, duas imagens SVG acessíveis e versões móveis. Os quatro SVGs são XML válido e contêm seis cards cada. As 32 referências locais examinadas no README não apresentaram destinos inexistentes. A checagem geométrica no navegador não encontrou texto fora dos cards. As quatro capturas foram inspecionadas sem texto cortado ou sobreposto. `git diff --check` não apontou erro de whitespace.
+- **Problemas/limitações:** a renderização final dentro da interface do GitHub não foi conferida; a inspeção visual usou Edge local. Não foram executados testes de código, pois a mudança é documental. M0 continua incompleta e M1 permanece bloqueada.
+- **Evidência:** `README.md`, `assets/pipeline-overview.svg`, `assets/pipeline-overview-mobile.svg`, `assets/data-architecture.svg` e `assets/data-architecture-mobile.svg`.
+- **Próximo passo autorizado:** concluir os itens pendentes de M0 conforme seus critérios.
+
+### 22/10/2026 — M0 / revisão editorial e técnica do README
+- **Objetivo:** apresentar o problema, a direção do projeto e seu estágio atual sem atribuir resultados ou funcionalidades ainda inexistentes.
+- **Arquivos alterados:** `README.md`, `docs/architecture.md`, `docs/data_sources.md` e este registro em `PROGRESSO.md`.
+- **Comandos executados:** leitura dos documentos e arquivos de configuração existentes; checagem PowerShell de links Markdown relativos em `README.md` e `docs/architecture.md`.
+- **Resultados observados:** README reorganizado com perguntas ainda sem resposta, fluxo que distingue inventário documentado de etapas planejadas, estado de implementação, fontes, limites e seção transparente sobre IA. Criado documento de arquitetura com estados explícitos. Os 18 links Markdown relativos verificados em `README.md`, `docs/architecture.md`, `docs/data_sources.md` e `PROGRESSO.md` apontam para caminhos existentes. Instruções de execução fictícias não foram incluídas. O estado geral e M0 foram atualizados de “não iniciado/autorizada para início” para “em andamento”, com o gate de saída ainda pendente, conforme o inventário e o diário já registrados.
+- **Correção de consistência:** o inventário registra que as tentativas `HEAD` não obtiveram arquivos; no estado atual, `data/raw/bhtrans/veiculos/si-veic-2023.csv` existe localmente. Sua presença foi verificada sem ler seu conteúdo. `docs/data_sources.md` agora distingue esses fatos. O arquivo não foi validado, e a entrada anterior do diário permanece como registro da verificação feita à época.
+- **Problemas/limitações:** conteúdo, integridade, esquema e hash do CSV continuam desconhecidos. Não foram executados testes de código; esta entrega foi documental. M0 continua incompleta e M1 bloqueada pelo gate existente.
+- **Evidência:** `README.md`, `docs/architecture.md`, `docs/data_sources.md`; checagem local dos links concluída sem caminhos inexistentes.
+- **Próximo passo autorizado:** concluir os itens pendentes de M0 conforme os critérios já registrados.
 
 ### 22/10/2026 — M0 / remover referência ao plano interno do README
 - **Objetivo:** evitar um link público quebrado e não publicar referência ao arquivo de planejamento que ficará local.

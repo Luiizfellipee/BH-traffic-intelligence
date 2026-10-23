@@ -10,7 +10,7 @@
 - `resource_show?id=<resource_id>` retornou metadados de recurso.
 - `datastore_search?resource_id=<resource_id>&limit=0` foi testado em 63 recursos listados, incluindo dicionários: 62 responderam com `success=true`; a consulta para `si-veic-2023` retornou HTTP 404.
 - Os 55 recursos anuais com `datastore_active=true` responderam às consultas DataStore. Para `si-veic-2023`, o metadado marca DataStore inativo e a consulta falhou com 404.
-- Foram tentados dois downloads por `HEAD` no host `ckan.pbh.gov.br` (si-veic-2023 e si-veic-2024); ambos retornaram HTTP 403 neste ambiente. Isso não permite concluir que o host bloqueia todos os clientes. Nenhum CSV foi baixado.
+- Foram tentadas duas requisições `HEAD` no host `ckan.pbh.gov.br` (si-veic-2023 e si-veic-2024); ambas retornaram HTTP 403 neste ambiente. Isso não permite concluir que o host bloqueia todos os clientes. Esses testes não obtiveram conteúdo dos arquivos. Existe atualmente uma cópia local manual de `si-veic-2023.csv` em `data/raw/bhtrans/veiculos/`; ela não foi inspecionada nem validada pelo projeto.
 
 A documentação CKAN explica que `package_search` pesquisa conjuntos, `resource_show` retorna metadados de um recurso e `datastore_search` consulta uma tabela vinculada ao recurso. O campo `datastore_active` foi conferido junto com chamadas reais a `datastore_search`.
 

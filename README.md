@@ -1,135 +1,113 @@
-<div align="center">
+# BH Traffic Intelligence
 
-# 🚦 BH Traffic Intelligence
+**Dados públicos para investigar sinistros de trânsito com vítimas em Belo Horizonte.**
 
-### Dados públicos para estudar os sinistros de trânsito com vítimas em Belo Horizonte
+> **Em desenvolvimento · M0 (fundação e inventário).** Quatro coleções BHTRANS foram inventariadas no CKAN. Ainda não há pipeline executável, análises nem dashboard. [Acompanhe as evidências e pendências](PROGRESSO.md).
 
-![Fase](https://img.shields.io/badge/fase-M0%20%7C%20em%20constru%C3%A7%C3%A3o-f0a44b)
-![Python](https://img.shields.io/badge/Python-3.12%20planejado-3776AB?logo=python&logoColor=white)
-![Fonte](https://img.shields.io/badge/fonte-CKAN%20%7C%20PBH-167c80)
-![Aprendizado](https://img.shields.io/badge/desenvolvimento-com%20apoio%20de%20IA-7057ff)
+## Navegação
 
-**Um projeto de portfólio em construção sobre engenharia e análise de dados públicos.**
+- [O projeto](#o-projeto)
+- [Estado atual](#estado-atual)
+- [Perguntas de investigação](#perguntas-de-investigação)
+- [Visão geral do pipeline](#visão-geral-do-pipeline)
+- [Arquitetura de dados](#arquitetura-de-dados)
+- [Tecnologias](#tecnologias)
+- [Fontes e cobertura](#fontes-e-cobertura)
+- [Qualidade e rastreabilidade](#qualidade-e-rastreabilidade)
+- [Resultados e demonstrações](#resultados-e-demonstrações)
+- [Como acompanhar](#como-acompanhar)
+- [Documentação técnica](#documentação-técnica)
+- [Limitações e próximos passos](#limitações-e-próximos-passos)
+- [Desenvolvimento assistido por IA](#desenvolvimento-assistido-por-ia)
 
-</div>
+## O projeto
 
----
+O projeto organiza um caminho reproduzível para estudar os registros de sinistros com vítimas publicados pela BHTRANS: conhecer as fontes, preservar os arquivos originais, verificar a qualidade e, futuramente, analisar os dados com períodos, universos e métodos explícitos.
 
-## 🎯 Sobre o projeto
+As quatro coleções no escopo são **ocorrências, pessoas, veículos e logradouros**. Esses dados não representam todos os eventos de trânsito da cidade. Contagens de registros também não medem risco viário sem dados adequados de exposição.
 
-O **BH Traffic Intelligence** está sendo construído para organizar e analisar dados públicos de sinistros de trânsito com vítimas registrados em Belo Horizonte. A proposta é percorrer o ciclo de dados com rastreabilidade: conhecer as fontes, preservar os arquivos originais, validar a qualidade, preparar os dados e, depois, produzir análises que possam ser explicadas e reproduzidas.
+## Estado atual
 
-O projeto ainda está no início. Neste momento, há um inventário verificado das quatro coleções da BHTRANS no Portal de Dados Abertos da PBH. A ingestão automatizada, as transformações, as análises e qualquer dashboard ainda não foram implementados.
+| Estado | Componente | Evidência ou próximo marco |
+|---|---|---|
+| **Verificado** | Inventário CKAN das quatro coleções e de seus recursos | [Fontes documentadas](docs/data_sources.md), captura de 22/10/2026 |
+| **Em desenvolvimento** | M0: fundação, ambiente e documentação | [Checklist da fase](PROGRESSO.md); gate ainda pendente |
+| **Presença local, sem validação** | `data/raw/bhtrans/veiculos/si-veic-2023.csv` | Conteúdo, esquema, integridade e hash ainda não verificados |
+| **Planejado** | Ingestão; qualidade e camadas; SQL e análise; dashboard | M1–M5, sujeitos aos gates do [progresso](PROGRESSO.md) |
+| **Opcional** | Machine Learning | M6, condicionado a um caso de uso e avaliação de viabilidade |
 
-> **Escopo:** dados de sinistros com vítimas publicados nas coleções selecionadas. O projeto não representa todos os sinistros de trânsito e não mede, por si só, o risco de uma via.
+## Perguntas de investigação
 
-## 🧭 Estado atual
+São perguntas futuras, dependentes da cobertura factual e dos campos que forem verificados:
 
-| Etapa | Estado |
-|---|---|
-| Fase ativa | **M0 — Fundação e inventário** |
-| Catálogo CKAN | Quatro coleções e seus recursos inventariados em [`docs/data_sources.md`](docs/data_sources.md) |
-| Arquivo bruto local | `data/raw/bhtrans/veiculos/si-veic-2023.csv` |
-| Módulo de ingestão automatizada | Ainda não implementado; previsto para M1 |
-| Limpeza, modelo analítico e consultas | Ainda não implementados |
-| Análises e resultados | Ainda não produzidos |
-| Dashboard ou publicação | Ainda não implementados |
+- Como os registros se distribuem no tempo?
+- Como variam entre regiões ou logradouros, se os dados geográficos permitirem?
+- Como se caracterizam pessoas e veículos envolvidos, respeitando a granularidade de cada coleção?
+- Quais lacunas e mudanças de esquema limitam comparações entre anos?
 
-O catálogo consultado apresenta recursos anuais de **2011 a 2024** nas coleções de ocorrências, pessoas, veículos e logradouros. As datas de atualização, formatos e disponibilidade no DataStore foram registrados recurso a recurso. Um caso requer atenção: o recurso de veículos de 2023 está marcado sem DataStore e sem formato informado nos metadados. O inventário explica também as limitações de acesso observadas durante a verificação.
+## Visão geral do pipeline
 
-O CSV local foi baixado manualmente. Seu esquema, integridade, codificação e hash ainda não foram verificados pelo projeto; por isso, ele não sustenta análises ou conclusões neste momento.
+O fluxo resume a direção do projeto. **Somente a descoberta documental está verificada; as demais etapas são planejadas.** As setas indicam sequência de trabalho, não execução automatizada.
 
-## 🔄 Fluxo do projeto
+<picture>
+  <source media="(max-width: 700px)" srcset="assets/pipeline-overview-mobile.svg">
+  <img src="assets/pipeline-overview.svg" alt="Pipeline em seis etapas: Descoberta verificada em M0; Ingestão M1, Qualidade M2, Transformação M2, Camada analítica M3–M4 e Consumo M5 planejados.">
+</picture>
 
-```mermaid
-flowchart LR
-    A["Portal CKAN da PBH<br/>4 coleções inventariadas"] --> B["Descobrir recurso, ano<br/>e metadados"]
-    B --> C{"DataStore ativo?"}
-    C -->|Sim| D["Consultar registros<br/>pela API CKAN"]
-    C -->|Não| E["Baixar arquivo<br/>do recurso"]
-    D --> F["data/raw<br/>snapshot, metadados e SHA-256"]
-    E --> F
-    F --> G["Profiling e validação<br/>esquema, datas e qualidade"]
-    G --> H["Bronze<br/>dados próximos à origem"]
-    H --> I["Silver<br/>dados tipados e documentados"]
-    I --> J["PostgreSQL<br/>modelo e consultas"]
-    J --> K["EDA e relatório<br/>métricas com denominadores"]
-    K --> L["Dashboard<br/>se aprovado"]
-    L -. após gate de viabilidade .-> M["Machine Learning<br/>opcional"]
+[Detalhes e critérios de cada etapa](docs/architecture.md).
 
-    classDef checked fill:#dafbe1,stroke:#1a7f37,stroke-width:2px,color:#24292f;
-    classDef partial fill:#fff4d6,stroke:#d4a72c,stroke-width:2px,color:#24292f;
-    classDef planned fill:#f6f8fa,stroke:#8c959f,stroke-width:1px,color:#57606a;
-    classDef optional fill:#f4edff,stroke:#8250df,stroke-width:1px,color:#3d246c;
-    class A checked;
-    class F partial;
-    class B,C,D,E,G,H,I,J,K,L planned;
-    class M optional;
-```
+## Arquitetura de dados
 
-**Estado do fluxo:** verde marca o inventário CKAN verificado; amarelo marca a camada bruta, onde há um CSV baixado manualmente, ainda sem hash ou profiling; cinza indica etapas planejadas; roxo indica Machine Learning opcional, condicionado a um gate de viabilidade. O DataStore não está ativo para todos os recursos, por isso o fluxo prevê consulta pela API ou download do arquivo conforme os metadados. O andamento do projeto está em [`PROGRESSO.md`](PROGRESSO.md).
+A arquitetura em camadas expressa responsabilidades previstas. **PostgreSQL, Parquet, dashboard e rotinas de ingestão ainda não estão implementados.** O acesso a cada recurso dependerá da disponibilidade observada no CKAN.
 
-## 🧰 Tecnologias previstas
+<picture>
+  <source media="(max-width: 700px)" srcset="assets/data-architecture-mobile.svg">
+  <img src="assets/data-architecture.svg" alt="Arquitetura em seis módulos: Fontes verificadas em M0; Ingestão, Armazenamento, Processamento, Camada analítica e Consumo planejados para M1 a M5.">
+</picture>
 
-As ferramentas abaixo são opções previstas para etapas futuras, não uma lista de componentes já configurados:
+[Arquitetura proposta, evidências e restrições](docs/architecture.md).
 
-- **Python 3.12** para a ingestão e as transformações;
-- **pytest** e **Ruff** para testes e qualidade de código;
-- **PostgreSQL** local para consultas relacionais;
-- **Parquet** para armazenamento analítico, se confirmado durante o desenvolvimento;
-- **Power BI ou Metabase** como opção de apresentação, a decidir numa etapa posterior.
+## Tecnologias
 
-Pandas ou Polars ainda não foram escolhidos. A decisão deve vir depois da inspeção dos arquivos reais.
+| Situação | Tecnologia | Uso |
+|---|---|---|
+| Declarada | Python `>=3.12`, pytest e Ruff em [`pyproject.toml`](pyproject.toml) | Metadados do projeto; instalação limpa e testes ainda não validados |
+| Planejada | Python para ingestão; Parquet se justificado pelo profiling | M1–M2 |
+| Planejada | PostgreSQL local e SQL | M3; banco ainda não configurado |
+| A decidir | Pandas ou Polars; Power BI ou Metabase | Escolhas dependentes de evidência e necessidade |
 
-## 🗂️ Fontes de dados
+## Fontes e cobertura
 
-As quatro coleções inventariadas são publicadas pela BHTRANS no [Portal de Dados Abertos da PBH](https://dados.pbh.gov.br/):
+O [Portal de Dados Abertos da PBH](https://dados.pbh.gov.br/) publica as quatro coleções BHTRANS inventariadas. Os metadados consultados em 22/10/2026 indicam recursos anuais de **2011 a 2024**. Esses anos são rótulos do catálogo; a cobertura factual dos arquivos ainda não foi confirmada.
 
-1. Relação de ocorrências de acidentes de trânsito com vítima;
-2. Relação das pessoas envolvidas;
-3. Relação dos veículos envolvidos;
-4. Relação dos logradouros dos locais.
+O [inventário detalhado](docs/data_sources.md) registra recursos, formatos, datas informadas pelo CKAN, consultas ao DataStore e lacunas. Entre os recursos anuais ativos, 55 consultas ao DataStore responderam; `si-veic-2023` estava marcado sem DataStore e sua consulta respondeu HTTP 404. Duas requisições `HEAD` a arquivos retornaram HTTP 403 no ambiente usado. Isso não determina o acesso de outros clientes. Os metadados indicam licença **ODbL** para as quatro coleções; a licença do código ainda será definida.
 
-Os metadados consultados informam **Open Data Commons Open Database License (ODbL)** para essas coleções. Essa licença dos dados não define a licença do código do projeto, que continua pendente.
+## Qualidade e rastreabilidade
 
-Consulte [`docs/data_sources.md`](docs/data_sources.md) para nomes dos recursos, anos, formatos, datas do CKAN, endpoints verificados e limitações. As datas de atualização dos recursos não devem ser confundidas com a data mais recente dos fatos registrados; esta última ainda não foi verificada nos arquivos.
+O inventário registra origem e metadados. O trabalho previsto inclui preservar `raw`, registrar snapshots e SHA-256, fazer profiling por recurso e ano, reconciliar entradas e saídas e validar chaves antes de modelar tabelas. **Essas rotinas ainda não existem.** O arquivo local de veículos de 2023 não é evidência de ingestão validada.
 
-## 🤝 Uso de Inteligência Artificial como apoio ao aprendizado
+[Restrições arquiteturais](docs/architecture.md) incluem evitar dupla contagem em junções de coleções com granularidades distintas e manter BHTRANS e SENATRAN em análises separadas até uma auditoria formal de compatibilidade.
 
-O projeto é desenvolvido com apoio do **OpenAI Codex** como ferramenta de aprendizagem e colaboração. A IA ajuda a decompor tarefas, faz perguntas para estimular o entendimento, explica conceitos e apoia a revisão e a implementação de código.
+## Resultados e demonstrações
 
-O objetivo é que eu consiga compreender e explicar as decisões do projeto, e não apenas receber código pronto. A validação das fontes, a interpretação dos resultados e as decisões finais continuam sob minha responsabilidade. Nenhum achado analítico será apresentado como resultado sem ter sido calculado e conferido com dados reais.
+Ainda não há resultados analíticos, gráficos, capturas de dashboard ou demonstração executável validados. Esta seção será preenchida quando houver evidências reproduzíveis.
 
-## ▶️ Como acompanhar no VS Code
+## Como acompanhar
 
-Este repositório ainda não tem um pipeline ou comandos executáveis de ingestão. Para acompanhar o trabalho:
+Abra a pasta no VS Code e consulte [`PROGRESSO.md`](PROGRESSO.md) para a fase ativa, [`docs/data_sources.md`](docs/data_sources.md) para o inventário e [`docs/architecture.md`](docs/architecture.md) para a arquitetura. Ainda não há comando de execução de pipeline; instruções de instalação e execução serão publicadas após implementação e validação.
 
-1. Abra a pasta do projeto no VS Code.
-2. Consulte [`PROGRESSO.md`](PROGRESSO.md) para ver a fase ativa e as pendências.
-3. Consulte [`docs/data_sources.md`](docs/data_sources.md) para revisar o inventário CKAN.
-4. Na fase de ingestão, as instruções de ambiente e execução serão adicionadas aqui após a implementação e validação dos comandos.
+## Documentação técnica
 
-Os arquivos brutos ficam sob `data/` e estão excluídos do Git pelo `.gitignore`; não os inclua em commits ou publicações.
+- [Inventário e cobertura das fontes](docs/data_sources.md)
+- [Arquitetura e responsabilidades por etapa](docs/architecture.md)
+- [Marcos, gates e evidências](PROGRESSO.md)
 
-## ⚠️ Limitações atuais
+## Limitações e próximos passos
 
-- O projeto ainda não tem código de ingestão, testes automatizados, banco configurado ou pipeline reproduzível.
-- Os arquivos não passaram por profiling: colunas, codificação, separador, nulos, duplicidades e período factual permanecem desconhecidos.
-- Os recursos são de sinistros com vítimas; não permitem generalizar automaticamente para todos os eventos de trânsito.
-- Contagens de sinistros, sem dados de exposição adequados, não equivalem a taxas de risco.
-- A compatibilidade entre anos precisa ser avaliada antes de formar séries históricas.
-- Nenhum modelo de Machine Learning está aprovado ou em desenvolvimento nesta etapa.
+Colunas, encoding, separador, nulos, duplicidades e datas dos fatos ainda não passaram por profiling. Datas de modificação no CKAN não são datas dos eventos. Séries históricas dependem de avaliar cobertura e compatibilidade entre anos; taxas de risco exigem denominadores de exposição.
 
-## 📌 Próximas etapas
+O próximo passo é concluir os itens pendentes de **M0** e verificar seu gate. A ingestão pertence à M1 e depende de autorização para avançar de fase.
 
-1. Concluir a fundação do projeto e os itens restantes de M0.
-2. Após o gate de M0, iniciar M1 para descoberta e ingestão auditável, com logs, retries, hashes e testes com mocks.
-3. Só depois do profiling, avançar para qualidade, modelagem analítica e investigação dos dados.
+## Desenvolvimento assistido por IA
 
----
-
-<div align="center">
-
-**Projeto de estudo em andamento · Belo Horizonte, MG**
-
-</div>
+O projeto usa o OpenAI Codex como apoio ao desenvolvimento e à documentação. Decisões técnicas, validação dos dados e interpretação de resultados permanecem sob responsabilidade do autor. Nenhuma conclusão analítica será apresentada sem cálculo e conferência com dados reais.
