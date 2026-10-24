@@ -83,6 +83,24 @@
 
 ## Diário de execução
 
+### 23/10/2026 — M0 / simplificação visual do README
+- **Objetivo:** aproximar a apresentação do README de referência conforme retorno do proprietário: título centralizado, tags de tecnologia, sem navegação ou diagramas na página principal.
+- **Arquivos alterados:** `README.md`; este registro em `PROGRESSO.md`. Os arquivos SVG existentes não foram alterados.
+- **Comandos executados:** leitura do README atual, `PROGRESSO.md`, trecho do plano e README de referência; `git status --short --branch`; `git remote -v`; verificação PowerShell dos links locais do README; busca com `rg` por imagens, Mermaid e navegação; `git diff --check`.
+- **Resultados observados:** título centralizado com tags Python 3.12, PostgreSQL planejado, SQL planejado e fonte BHTRANS; removidos navegação e diagrama do README; fluxo resumido em texto. Quatro destinos de links locais existem; a busca encontrou apenas as quatro imagens das tags; `git diff --check` retornou código 0. O texto informa que PostgreSQL e SQL ainda não foram implementados.
+- **Problemas/limitações:** a renderização visual das tags externas no GitHub e no VS Code não foi verificada; não há pipeline ou resultados analíticos para demonstrar. Testes de código não se aplicam a esta edição documental.
+- **Evidência:** `README.md` e verificações locais acima.
+- **Próximo passo autorizado:** concluir os itens pendentes de M0 e verificar seu gate, sem iniciar M1 automaticamente.
+
+### 23/10/2026 — M0 / README orientado ao projeto
+- **Objetivo:** apresentar o BH Traffic Intelligence de forma direta, seguindo a organização editorial do README de referência, com arquitetura e fluxo compreensíveis e sem roteiro de fases na página principal.
+- **Arquivos alterados:** `README.md`; este registro em `PROGRESSO.md`.
+- **Comandos executados:** leitura de `AGENTS.md`, `files/PLANO_MESTRE.md`, `PROGRESSO.md`, `README.md`, `docs/architecture.md`, `docs/data_sources.md` e `pyproject.toml`; consulta pública ao README de referência; `git status --short --branch`; `git diff -- README.md`; `git diff --check`; verificação com PowerShell dos links locais do README; busca com `rg` por termos de fases e roadmap.
+- **Resultados observados:** README reorganizado em proposta, dados e metodologia, arquitetura e fluxo, exploração e limitações. Os quatro destinos locais de links existem; a busca não encontrou termos de fases ou roadmap no README; `git diff --check` retornou código 0. O texto distingue inventário documentado de componentes ainda propostos. Nenhuma fase foi avançada.
+- **Problemas/limitações:** o diagrama Mermaid não teve renderização visual verificada; não há pipeline ou resultados analíticos a demonstrar. Testes de código não se aplicam a esta edição documental.
+- **Evidência:** `README.md`, diff revisado e verificações locais acima.
+- **Próximo passo autorizado:** concluir os itens pendentes de M0 e verificar seu gate, sem iniciar M1 automaticamente.
+
 ### 22/10/2026 — M0 / ferramenta local de otimização de contexto
 - **Objetivo:** disponibilizar o Token Optimizer para o Codex neste projeto sem incluir seus arquivos de configuração no Git.
 - **Arquivos alterados:** `.git/info/exclude` (regra local `.codex/`), `.codex/config.toml` e `.codex/hooks.json` (ambos ignorados pelo Git), configuração pessoal do Codex fora do repositório e este registro. O pacote foi instalado no cache pessoal do Codex.
